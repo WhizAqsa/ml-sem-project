@@ -29,11 +29,7 @@ def bagging_model(X_train,y_train,X_test):
   return y_pred
 
 
-# Perform grid search with cross-validation
-def get_best_params_grid_search(model, X_train, y_train, param_grid):
-  grid_search = GridSearchCV(model, param_grid, cv=5, scoring='f1_macro', verbose=2)
-  grid_search.fit(X_train, y_train)
-  return grid_search.best_params_
+#
 
 
 def fit_and_predict_svm(X_train,y_train,X_test):

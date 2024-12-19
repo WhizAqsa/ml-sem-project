@@ -1,25 +1,18 @@
 from sklearn.metrics import accuracy_score, classification_report
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
+import pandas as pd
 from matplotlib import pyplot as plt
 from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 import numpy as np
+from sklearn.model_selection import GridSearchCV
 
 def separate_features_label(dataset):
     X = dataset.drop('label', axis=1)
     y = dataset['label']
     return X, y
         
-    
-# merege the two datasets
-def merge_datasets(dataset1, dataset2):
-    # adding a label column in both the datasets
-    dataset1['label'] = 'cotton'
-    dataset2['label'] = 'rice'
-    # merge the two datasets
-    merged_dataset = pd.concat([dataset1, dataset2], ignore_index=True)
-    return merged_dataset
 def plot_sample_area_curve(sample_no,dataset):
     sample_data = dataset.iloc[sample_no][['NDVI01', 'NDVI02', 'NDVI03', 'NDVI04', 'NDVI05', 'NDVI06',
                                                 'NDVI07', 'NDVI08', 'NDVI09', 'NDVI10', 'NDVI11', 'NDVI12']]
@@ -45,35 +38,7 @@ def plot_sample_area_curve(sample_no,dataset):
     plt.text(6, 0.6, f'AUC: {auc:.2f}', ha='center', va='center')
     plt.show()
     
-def plot_histogram(dataset):
-  dataset.hist(bins=50, figsize=(20, 15))
-  plt.show()
-  
 
-def plot_boxplot(dataset):
-  figure = plt.figure(figsize=(12, 10))
-  dataset.boxplot()
-  plt.show()
-  
-  
-def evaluate_model(y_test, y_pred):
-  score = accuracy_score(y_test, y_pred)
-  print(f"Accuracy Score: {score}")
-  classification_report = classification_report(y_test, y_pred)
-  print(f"Classification Report:\n{classification_report}")
-  # confusion matrix
-  cm = confusion_matrix(y_test, y_pred)
-  print(f"Confusion Matrix:\n{cm}")
-  return score, classification_report,cm
-
-
-def visualize_confusion_matrix(cm):
-  plt.figure(figsize=(8, 4))
-  sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Cotton', 'Rice'], yticklabels=['Cotton', 'Rice'])
-  plt.xlabel('Predicted')
-  plt.ylabel('Actual')
-  plt.title('Confusion Matrix')
-  plt.show()
   
   
 def pca_analysis(X,y):
@@ -124,3 +89,10 @@ def fit_and_get_predictions(model, X_train, y_train, X_test):
   # make predictions
   y_pred = model.predict(X_test)
   return y_pred 
+
+
+# Perform grid search with cross-validation
+def get_best_params_grid_search(model, X_train, y_train, param_grid):
+  grid_search = GridSearchCV(model, param_grid, cv=5, scoring='f1_macro', verbose=1)
+  grid_search.fit(X_train, y_train)
+  return grid_search.best_params_

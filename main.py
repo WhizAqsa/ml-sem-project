@@ -8,7 +8,8 @@ from src.utils import evaluate_model
 from src.supervised import random_forest_model, bagging_model, get_best_params_grid_search, fit_and_predict_svm
 from src.utils import fit_and_get_predictions, separate_features_label, merge_datasets
 from sklearn.metrics import classification_report
-
+from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder
 
 # Define the path where the file should be extracted
 extract_to = "./data/raw/"
@@ -65,29 +66,7 @@ y_pred_xgb = fit_and_get_predictions(XGBClassifier(random_state=42), X_train_sca
 print("Classification report for best xgb model")
 print(classification_report(y_test_encoded, y_pred_xgb))
 
-print("XGBoost Grid Search")
-params_grid_xgboost = {
-  "max_depth": [3 ,5, 7],
-  "learning_rate": [0.01, 0.05, 0.1, 0.3],
-  "n_estimators": [100, 200, 300]
-}
-best_params_xgb = get_best_params_grid_search(
-  XGBClassifier(random_state=42),
-  X_train_scaled,
-  y_train_encoded,
-  params_grid_xgboost
-)
-print(f"XGBoost Best params: {best_params_xgb}")
-best_xgb_model = XGBClassifier(
-  random_state=42,
-  **best_params_xgb
-)
-y_pred_xgb_best = fit_and_get_predictions(
-  best_xgb_model,
-  X_train_scaled, 
-  y_train_encoded,
-  X_test_scaled
-)
+
 print("Classification report for best xgb model")
 print(classification_report(y_test_encoded, y_pred_xgb_best))
 print("\n")
