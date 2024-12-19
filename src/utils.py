@@ -6,7 +6,20 @@ from sklearn.decomposition import PCA
 from sklearn.cluster import KMeans
 import numpy as np
 
-
+def separate_features_label(dataset):
+    X = dataset.drop('label', axis=1)
+    y = dataset['label']
+    return X, y
+        
+    
+# merege the two datasets
+def merge_datasets(dataset1, dataset2):
+    # adding a label column in both the datasets
+    dataset1['label'] = 'cotton'
+    dataset2['label'] = 'rice'
+    # merge the two datasets
+    merged_dataset = pd.concat([dataset1, dataset2], ignore_index=True)
+    return merged_dataset
 def plot_sample_area_curve(sample_no,dataset):
     sample_data = dataset.iloc[sample_no][['NDVI01', 'NDVI02', 'NDVI03', 'NDVI04', 'NDVI05', 'NDVI06',
                                                 'NDVI07', 'NDVI08', 'NDVI09', 'NDVI10', 'NDVI11', 'NDVI12']]
@@ -105,3 +118,9 @@ def cluster_purity(y_true, y_pred):
     return np.sum(np.amax(conf_matrix, axis=0)) / np.sum(conf_matrix)
 
 
+
+def fit_and_get_predictions(model, X_train, y_train, X_test):
+  model.fit(X_train, y_train)
+  # make predictions
+  y_pred = model.predict(X_test)
+  return y_pred 
