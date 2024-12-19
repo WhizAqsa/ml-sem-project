@@ -3,7 +3,7 @@ from src.utils import fit_and_get_predictions,separate_features_label, get_best_
 from src.preprocessing import smote, remove_outliers
 from scripts.preprocess import preprocess_data
 from xgboost import XGBClassifier
-from src.evaluation import evaluate_model
+from src.evaluation import get_eval_metrics
 from src.plots import visualize_confusion_matrix
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
@@ -29,7 +29,7 @@ all the results should also be logged to a text file where you can then show it 
 """
 
 
-def run_xgb_model():s
+def run_xgb_model():
     # unzip the data file
     file_name = "data/raw/Crop-dataset.zip"
     with ZipFile(file_name, 'r') as zip:
@@ -76,6 +76,16 @@ def run_xgb_model():s
     
     # preprocess the data
     print("Preprocessing the data...")
+    
+    # remove the outliers
+    print("Removing outliers...")
+    X_2021_22, y_2021_22 = remove_outliers(X_2021_22, y_2021_22) 
+    X_2021_23, y_2021_23 = remove_outliers(X_2021_23, y_2021_23)
+    X_2022_23, y_2022_23 = remove_outliers(X_2022_23, y_2022_23)
+    X_2021, y_2021 = remove_outliers(X_2021, y_2021)
+    X_2022, y_2022 = remove_outliers(X_2022, y_2022)
+    X_2023, y_2023 = remove_outliers(X_2023, y_2023) 
+    
     # handle class imbalance
     print("Handling class imbalance...")
     X_resampled_21_22, y_resampled_21_22 = smote(X_2021_22, y_2021_22)
@@ -84,15 +94,6 @@ def run_xgb_model():s
     X_resampled_21, y_resampled_21 = smote(X_2021, y_2021)
     X_resampled_22, y_resampled_22 = smote(X_2022, y_2022)
     X_resampled_23, y_resampled_23 = smote(X_2023, y_2023)
-    
-    # remove the outliers
-    print("Removing outliers...")
-    X_resampled_21_22, y_resampled_21_22 = remove_outliers(X_resampled_21_22, y_resampled_21_22) 
-    X_resampled_22_23, y_resampled_22_23 = remove_outliers(X_resampled_22_23, y_resampled_22_23)
-    X_resampled_21_23, y_resampled_21_23 = remove_outliers(X_resampled_21_23, y_resampled_21_23)
-    X_resampled_21, y_resampled_21 = remove_outliers(X_resampled_21, y_resampled_21)
-    X_resampled_22, y_resampled_22 = remove_outliers(X_resampled_22, y_resampled_22)
-    X_resampled_23, y_resampled_23 = remove_outliers(X_resampled_23, y_resampled_23) 
     
     # normalize the features
     print("Normalizing the features...")
@@ -136,8 +137,9 @@ def run_xgb_model():s
     y_pred_xgb = fit_and_get_predictions(XGBClassifier(random_state=42), X_train_scaled_2021_22, y_train_encoded_2021_22, X_scaled_23)
     
     # print the classification report
-    score, eval_report, cm = evaluate_model(y_encoded_23, y_pred_xgb)
-    print(f"Classification report for default xgb model: {eval_report}")
+    score, eval_report, cm = get_eval_metrics(y_encoded_23, y_pred_xgb)
+    print(f"Accuracy score for default xgb model: {score}")
+    print(f"Classification report for default xgb model:\n{eval_report}")
     
     # visualise the conf matrix
     print("Visualise the confusion matrix...")
@@ -151,7 +153,7 @@ def run_xgb_model():s
     "n_estimators": [100, 200, 300]
     }
     best_params_xgb = get_best_params_grid_search(
-    XGBClassifier(random_state=42),
+    XGBClassifier(random_state=42,verbosity=2),
     X_train_scaled_2021_22,
     y_train_encoded_2021_22,
     params_grid_xgboost
@@ -171,8 +173,9 @@ def run_xgb_model():s
     )
     
     # print the classification report for the best model
-    score, eval_report, cm = evaluate_model(y_encoded_23, y_pred_xgb)
-    print(f"Classification report for the best xgb model: {eval_report}")
+    score, eval_report, cm = get(y_encoded_23, y_pred_xgb_best)
+    print(f"Accuracy score for the best xgb model: {score}")
+    print(f"Classification report for the best xgb model:\n{eval_report}")
     
     # visualise the conf matrix
     print("Visualise the confusion matrix...")

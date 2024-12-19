@@ -1,6 +1,6 @@
 from sklearn.metrics import accuracy_score, classification_report, confusion_matrix 
 
-def evaluate_model(y_test, y_pred):
+def get_eval_metrics(y_test, y_pred):
   score = accuracy_score(y_test, y_pred)
   # confusion matrix
   cm = confusion_matrix(y_test, y_pred)
