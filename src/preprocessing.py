@@ -3,6 +3,7 @@ import pandas as pd
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from imblearn.over_sampling import SMOTE
+from scipy import stats
 
 # preprocess features
 def normalize_features(X_train, X_test):
@@ -26,10 +27,11 @@ def smote(X,y):
   return X_resampled, y_resampled
 
 
-def remove_outliers(dataset):
-  ndvi_columns = dataset[columns]
+def remove_outliers(X_resampled, y_resampled, columns):
+  ndvi_columns = X_resampled[columns]
   z_scores = stats.zscore(ndvi_columns)
-  # print(z_scores)
   threshold = 3
-  dataset_no_outliers = dataset[(np.abs(z_scores) < threshold).all(axis=1)]
-  return dataset_no_outliers
+  mask = (np.abs(z_scores) < threshold).all(axis=1)
+  X_no_outliers = X_resampled[mask]
+  y_no_outliers = y_resampled[mask]
+  return X_no_outliers, y_no_outliers

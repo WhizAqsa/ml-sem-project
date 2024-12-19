@@ -1,8 +1,10 @@
 import pandas as pd
 from src.utils import fit_and_get_predictions,separate_features_label, get_best_params_grid_search
-from src.preprocessing import smote, remove_outliers, preprocess_data
+from src.preprocessing import smote, remove_outliers
+from scripts.preprocess import preprocess_data
 from xgboost import XGBClassifier
-from src.evaluation import evaluate_model, visualize_confusion_matrix
+from src.evaluation import evaluate_model
+from src.plots import visualize_confusion_matrix
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from zipfile import ZipFile
