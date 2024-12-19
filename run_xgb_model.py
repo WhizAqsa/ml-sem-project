@@ -77,15 +77,6 @@ def run_xgb_model():
     # preprocess the data
     print("Preprocessing the data...")
     
-    # remove the outliers
-    print("Removing outliers...")
-    X_2021_22, y_2021_22 = remove_outliers(X_2021_22, y_2021_22) 
-    X_2021_23, y_2021_23 = remove_outliers(X_2021_23, y_2021_23)
-    X_2022_23, y_2022_23 = remove_outliers(X_2022_23, y_2022_23)
-    X_2021, y_2021 = remove_outliers(X_2021, y_2021)
-    X_2022, y_2022 = remove_outliers(X_2022, y_2022)
-    X_2023, y_2023 = remove_outliers(X_2023, y_2023) 
-    
     # handle class imbalance
     print("Handling class imbalance...")
     X_resampled_21_22, y_resampled_21_22 = smote(X_2021_22, y_2021_22)
@@ -94,6 +85,15 @@ def run_xgb_model():
     X_resampled_21, y_resampled_21 = smote(X_2021, y_2021)
     X_resampled_22, y_resampled_22 = smote(X_2022, y_2022)
     X_resampled_23, y_resampled_23 = smote(X_2023, y_2023)
+    
+    # remove the outliers
+    print("Removing outliers...")
+    X_resampled_21_22, y_resampled_21_22 = remove_outliers(X_resampled_21_22, y_resampled_21_22) 
+    X_resampled_22_23, y_resampled_22_23 = remove_outliers(X_resampled_22_23, y_resampled_22_23)
+    X_resampled_21_23, y_resampled_21_23 = remove_outliers(X_resampled_21_23, y_resampled_21_23)
+    X_resampled_21, y_resampled_21 = remove_outliers(X_resampled_21, y_resampled_21)
+    X_resampled_22, y_resampled_22 = remove_outliers(X_resampled_22, y_resampled_22)
+    X_resampled_23, y_resampled_23 = remove_outliers(X_resampled_23, y_resampled_23) 
     
     # normalize the features
     print("Normalizing the features...")
@@ -173,12 +173,12 @@ def run_xgb_model():
     )
     
     # print the classification report for the best model
-    score, eval_report, cm = get(y_encoded_23, y_pred_xgb_best)
+    score, eval_report, cm = get_eval_metrics(y_encoded_23, y_pred_xgb_best)
     print(f"Accuracy score for the best xgb model: {score}")
     print(f"Classification report for the best xgb model:\n{eval_report}")
     
     # visualise the conf matrix
-    print("Visualise the confusion matrix...")
+    print("Visualise the confusion matrix after applying grid search...")
     visualize_confusion_matrix(cm)
     
 
