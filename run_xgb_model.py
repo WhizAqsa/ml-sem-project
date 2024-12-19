@@ -6,6 +6,7 @@ from src.evaluation import evaluate_model, visualize_confusion_matrix
 from sklearn.preprocessing import StandardScaler
 from sklearn.preprocessing import LabelEncoder
 from zipfile import ZipFile
+import sys
 
 
 """
@@ -23,8 +24,6 @@ from zipfile import ZipFile
 all results should be properly logged.
 all the plots should either be saved in a directory or be shown at runtime
 all the results should also be logged to a text file where you can then show it to sir
-
-
 """
 
 
@@ -170,7 +169,10 @@ def run_xgb_model():
     print("Visualise the confusion matrix...")
     visualize_confusion_matrix(cm)
     
-    
 
 if __name__ == "__main__":
-    run_xgb_model()
+    # Redirect stdout to a file
+    with open('results.txt', 'w') as f:
+        sys.stdout = f
+        run_xgb_model()
+        sys.stdout = sys.__stdout__  # Reset redirect.
