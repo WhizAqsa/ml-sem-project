@@ -29,7 +29,7 @@ all the results should also be logged to a text file where you can then show it 
 """
 
 
-def run_xgb_model():
+def run_xgb_model():s
     # unzip the data file
     file_name = "data/raw/Crop-dataset.zip"
     with ZipFile(file_name, 'r') as zip:
@@ -114,12 +114,19 @@ def run_xgb_model():
     
     # save the preprocessed data
     print("Saving the preprocessed data...")
-    combined_df_2021_22 = pd.concat([X_train_scaled_2021_22, X_test_scaled_2021_22], ignore_index=True)
-    combined_df_2021_22['label'] = y_train_encoded_2021_22 + y_test_encoded_2021_22
-    combined_df_2021_23 = pd.concat([X_train_scaled_2021_23, X_test_scaled_2021_23], ignore_index=True)
-    combined_df_2021_23['label'] = y_train_encoded_2021_23 + y_test_encoded_2021_23
-    combined_df_2022_23 = pd.concat([X_train_scaled_2022_23, X_test_scaled_2022_23], ignore_index=True)
-    combined_df_2022_23['label'] = y_train_encoded_2022_23 + y_test_encoded_2022_23
+
+    # Combine and add labels for 2021-22
+    combined_df_2021_22 = pd.concat([pd.DataFrame(X_train_scaled_2021_22), pd.DataFrame(X_test_scaled_2021_22)], ignore_index=True)
+    combined_labels_2021_22 = pd.concat([pd.Series(y_train_encoded_2021_22), pd.Series(y_test_encoded_2021_22)], ignore_index=True)
+    combined_df_2021_22['label'] = combined_labels_2021_22
+
+    # Combine and add labels for 2021-23
+    combined_df_2021_23 = pd.concat([pd.DataFrame(X_train_scaled_2021_23), pd.DataFrame(X_test_scaled_2021_23)], ignore_index=True)
+    combined_labels_2021_23 = pd.concat([pd.Series(y_train_encoded_2021_23), pd.Series(y_test_encoded_2021_23)], ignore_index=True)
+    combined_df_2021_23['label'] = combined_labels_2021_23
+
+    # Combine and add labels for 2022-23
+    combined_df_2022_23 = pd.concat([pd.DataFrame(X_train_scaled_2022_23), pd.DataFrame(X_test_scaled_2022_23)], ignore_index=True)
     combined_df_2021_22.to_csv('data/processed/cotton_rice_2021_22.csv', index=False)
     combined_df_2021_23.to_csv('data/processed/cotton_rice_2021_23.csv', index=False)
     combined_df_2022_23.to_csv('data/processed/cotton_rice_2022_23.csv', index=False)
@@ -173,8 +180,4 @@ def run_xgb_model():
     
 
 if __name__ == "__main__":
-    # Redirect stdout to a file
-    with open('results.txt', 'w') as f:
-        sys.stdout = f
-        run_xgb_model()
-        sys.stdout = sys.__stdout__  # Reset redirect.
+    run_xgb_model()

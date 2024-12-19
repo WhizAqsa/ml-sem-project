@@ -5,6 +5,7 @@ from sklearn.preprocessing import LabelEncoder
 from imblearn.over_sampling import SMOTE
 from scipy import stats
 
+
 # preprocess features
 def normalize_features(X_train, X_test):
   scaler = StandardScaler()
@@ -27,7 +28,10 @@ def smote(X,y):
   return X_resampled, y_resampled
 
 
-def remove_outliers(X_resampled, y_resampled, columns):
+def remove_outliers(X_resampled, y_resampled):
+  columns = ['NDVI01', 'NDVI02', 'NDVI03', 'NDVI04', 'NDVI05', 'NDVI06',
+  'NDVI07', 'NDVI08', 'NDVI09', 'NDVI10', 'NDVI11', 'NDVI12']
+
   ndvi_columns = X_resampled[columns]
   z_scores = stats.zscore(ndvi_columns)
   threshold = 3
