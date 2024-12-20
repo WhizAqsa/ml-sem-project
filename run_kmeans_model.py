@@ -1,6 +1,6 @@
 from sklearn.cluster import KMeans
 from matplotlib import pyplot as plt
-from src.plots import plot_k_values_with_elbow_method,plot_clusters_without_pca,plot_clusters_with_pca, plot_class_distribution_in_clusters,visualize_confusion_matrix
+from src.plots import plot_k_values_with_elbow_method,plot_kmeans_clusters_without_pca,plot_kmeans_clusters_with_pca,visualize_confusion_matrix, plot_kmeans_class_distribution_in_clusters
 from src.evaluation import calculate_cluster_purity, get_confusion_matrix
 import pandas as pd
 from zipfile import ZipFile
@@ -68,8 +68,7 @@ def run_kmeans_model():
     y_encoded_22 = encoder.transform(y_resampled_22)
     y_encoded_23 = encoder.transform(y_resampled_23)
     
-    
-    #-------------------------1st Split----------------------------
+    # KMeans Clustering
     print("--------------------------------------------------------")
     print("Perform KMeans Clustering on 2021-22 (crop,rice) dataset")
     print("--------------------------------------------------------")
@@ -89,15 +88,15 @@ def run_kmeans_model():
         
         # Visualize class distribution in clusters for different k values
         print(f"Visualizing class distribution in clusters for k={k}...")
-        plot_class_distribution_in_clusters(y_encoded_21, clusters, k)
+        plot_kmeans_class_distribution_in_clusters(y_encoded_21, clusters, k)
         
         # Show clusters with PCA
         print("Visualizing clusters with PCA...")
-        plot_clusters_with_pca(X_scaled_21, clusters, k)
+        plot_kmeans_clusters_with_pca(X_scaled_21, clusters, k)
         
         # Show clusters without PCA
         print("Visualizing clusters without PCA...")
-        plot_clusters_without_pca(X_scaled_21, clusters, k)
+        plot_kmeans_clusters_without_pca(X_scaled_21, clusters, k)
     
         # cluster purity
         purity = calculate_cluster_purity(y_encoded_21,clusters)
